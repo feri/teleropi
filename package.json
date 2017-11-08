@@ -1,0 +1,42 @@
+{
+  "name": "teleropi",
+  "version": "0.0.1",
+  "description": "Experiments with Telegram API and Raspberry Pi.",
+  "main": "app.js",
+  "scripts": {
+    "start": "node ./bin/www",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "body-parser": "^1.18.2",
+    "cookie-parser": "^1.4.3",
+    "debug": "^2.6.9",
+    "express": "~4.15.5",
+    "morgan": "^1.9.0",
+    "pug": "^2.0.0-beta11",
+    "request-promise": "~4.2.2",
+    "request-promise-core": "~1.1.1",
+    "serve-favicon": "^2.4.5",
+    "slimbot": "~0.7.7"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/feri/teleropi"
+  },
+  "keywords": [
+    "telegram",
+    "bot",
+    "raspberry",
+    "rpi",
+    "iot",
+    "monitoring",
+    "api",
+    "experiment"
+  ],
+  "author": "Ferenc Székely",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/feri/teleropi/issues"
+  },
+  "homepage": "https://github.com/feri/teleropi"
+}
