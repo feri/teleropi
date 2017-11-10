@@ -13,20 +13,29 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 const Slimbot = require('slimbot');
-
+const netif = require('netinterfaces');
 // config file(s)
 const teleropi = require('./config/teleropi.config');
 
 // debug stuff
 var debug = require('debug')(teleropi.name);
-var slimbot_debug = require('debug')('Slimbot_' + teleropi.name);
+var slimbot_debug = require('debug')(teleropi.name + '_Slimbot');
+
+// list all interfaces
+function reportIps(messageId = null) {
+  var reply = 'Available interfaces:';
+  var map = netif.list();
+  if (messageId && map) {
+    slimbot.sendMessage(messageId, reply + "\r\n" + JSON.stringify(map), {});
+  }
+}
 
 // start
 var index = require('./routes/index');
+const slimbot = new Slimbot(teleropi.TelegramToken);
+slimbot_debug('%o', slimbot);
 
 var app = express();
-
-const slimbot = new Slimbot(teleropi.TelegramToken);
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -60,7 +69,6 @@ app.use(function(err, req, res, next) {
   res.render('error');
 });
 
-
 // Slimbot - Register listeners
 slimbot.on('message', message => {
   let optionalParams = {};
@@ -81,25 +89,25 @@ slimbot.on('message', message => {
             inline_keyboard: [[
               { text: 'Hello', callback_data: 'hello' }
             ],[
-              { text: 'IP Address', callback_data: 'ipaddr' },
+              { text: 'All IP Interfaces', callback_data: 'ip' },
             ],[
               { text: 'Last Picture', callback_data: 'lastpic' },
             ]]
           })
         };
+        slimbot.sendMessage(message.chat.id, reply, optionalParams);
         break;
       case '/ip':
       case 'ip':
-        reply = 'The IP address is: ';
+        reportIps(message.chat.id);
         break;
       case '/lastpic':
       case 'lastpic':
         reply = 'Here comes the last picture: ';
+        slimbot.sendMessage(message.chat.id, reply, optionalParams);
         break;
     }
   }
-
-  slimbot.sendMessage(message.chat.id, reply, optionalParams);
 });
 
 slimbot.on('callback_query', query => {
@@ -110,17 +118,19 @@ slimbot.on('callback_query', query => {
   switch (query.data) {
     case 'hello':
       reply = 'Hello!';
+      slimbot.sendMessage(query.message.chat.id, reply);
       break;
-    case 'ipaddr':
-      reply = 'The IP address is: ';
+    case 'ip':
+      reportIps(query.message.chat.id);
       break;
     case 'lastpic':
       reply = 'Here comes the last picture: ';
+      slimbot.sendMessage(query.message.chat.id, reply);
       break;
     default:
       reply = 'n/a';
+      slimbot.sendMessage(query.message.chat.id, reply);
   }
-  slimbot.sendMessage(query.message.chat.id, reply);
 });
 
 // Slimbot - Call API
