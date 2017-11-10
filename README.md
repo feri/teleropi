@@ -26,4 +26,5 @@ $ DEBUG=* bin/www
 Debug flags
 ===
 *               : Enable all debugging
-Slimbot_TeleRopi: Slimbot related debug messages only
+TeleRopi        : Only TeleRopi debugs
+TeleRopi_Slimbot: Slimbot related debug messages only
