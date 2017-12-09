@@ -1,7 +1,7 @@
 {
   "name": "teleropi",
   "version": "0.0.2",
-  "description": "Experiments with Telegram API and Raspberry Pi.",
+  "description": "Experiments with the Telegram Bot API and Raspberry Pi.",
   "main": "app.js",
   "scripts": {
     "start": "node ./app.js",
