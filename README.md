@@ -10,9 +10,15 @@ Installation
 
 Configuration
 ===
-Edit ''config/teleropi.config'' according to your installation.
+Create a Telegram bot in order to obtain an API token that is required
+by TeleRopi. More information on creating a bot can be found at:
+https://core.telegram.org/bots#6-botfather.
 
-Create a Telegram bot and add the API Token to 'TelegramToken'.
+TeleRopi's configuration is located at: __config/teleropi.config__
+
+Please rename the template and edit the configuration according to your
+installation. Add the Telegram API Token to the appropriate line in the
+configuration file.
 
 Start
 ===
