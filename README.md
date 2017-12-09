@@ -13,12 +13,12 @@ Installation
 ===
 1. Clone the repository
 ```
-git clone https://github.com/feri/teleropi
+$ git clone https://github.com/feri/teleropi
 ```
 
 2. Install dependencies
 ```
-nmp install
+$ nmp install
 ```
 
 Configuration
