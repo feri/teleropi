@@ -1,6 +1,6 @@
 TeleRopi
 ===
-Experiments with Telegram API and Raspberry Pi.
+Experiments with the Telegram Bot API and Raspberry Pi.
 
 Installation
 ===
@@ -21,10 +21,10 @@ $ bin/www
 
 or using debugging:
 
-$ DEBUG=* bin/www
+$ DEBUG=* node app.js
 
 Debug flags
 ===
-*               : Enable all debugging
-TeleRopi        : Only TeleRopi debugs
-TeleRopi_Slimbot: Slimbot related debug messages only
+*                 : Enable all debugging
+TeleRopi_Slimbot  : Slimbot debug messages only
+TeleRopi_reportIPs: reportIPs debug messages only
