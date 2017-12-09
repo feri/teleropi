@@ -2,11 +2,24 @@ TeleRopi
 ===
 Experiments with the Telegram Bot API and Raspberry Pi.
 
+Requirements
+===
+TeleRopi requires:
+
+* nodejs >= 8.0.0
+* npm >= 5.5.1
+
 Installation
 ===
+1. Clone the repository
+```
+git clone https://github.com/feri/teleropi
+```
 
-1. clone the repo
-2. run 'nmp install'
+2. Install dependencies
+```
+nmp install
+```
 
 Configuration
 ===
