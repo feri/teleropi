@@ -9,8 +9,8 @@
   },
   "dependencies": {
     "debug": "^2.6.9",
-    "slimbot": "~0.7.7"
-    "netinterfaces": "0.0.2",
+    "slimbot": "~0.7.7",
+    "netinterfaces": "0.0.2"
   },
   "repository": {
     "type": "git",
