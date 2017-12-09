@@ -1,0 +1,20 @@
+/**
+ * TeleRopi configuration
+ *
+ * Author: ferenc.szekely@gmail.com
+ * License: MIT
+ *
+ * Copyright (c) 2017 Ferenc Székely
+ */
+
+var teleropi = exports = module.exports = {
+  // name used in debug logs for instance
+  name: 'TeleRopi',
+
+  /**
+   * Telegram API Token
+   * Please see https://core.telegram.org/bots#botfather
+   * and add your token below.
+   */
+  TelegramToken: '.........'
+}
