@@ -25,6 +25,8 @@ $ DEBUG=* node app.js
 
 Debug flags
 ===
+```
 *                 : Enable all debugging
 TeleRopi_Slimbot  : Slimbot debug messages only
 TeleRopi_reportIPs: reportIPs debug messages only
+```
