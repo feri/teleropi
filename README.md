@@ -16,12 +16,15 @@ Create a Telegram bot and add the API Token to 'TelegramToken'.
 
 Start
 ===
+```
+$ node app.js
+```
 
-$ bin/www
+or debug (using flags):
 
-or using debugging:
-
+```
 $ DEBUG=* node app.js
+```
 
 Debug flags
 ===
