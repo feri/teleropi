@@ -23,10 +23,34 @@ var slimbot_debug = require('debug')(teleropi.name + '_Slimbot');
 
 // list all interfaces
 function reportIps(messageId = null) {
-  var reply = 'Available interfaces:';
+  var reply = "Available interfaces:\r\n";
+  var len, len2;
+  var found = false;
+  var addresses = '';
   var map = netif.list();
+  slimbot_debug('%o', map);
+
   if (messageId && map) {
-    slimbot.sendMessage(messageId, reply + "\r\n" + JSON.stringify(map), {});
+    slimbot_debug('%o', Object.keys(map));
+    for (var i = 0, len = Object.keys(map).length; i < len; i++) {
+      var name = Object.keys(map)[i];
+      var allifs = map[name];
+      var addresses = '';
+      for (var j = 0, len2 = allifs.length; j < len2; j++) {
+        if (allifs[j].internal == false && typeof allifs[j].address != "undefined") {
+          addresses += allifs[j].address + ' ';
+          found = true;
+        }
+      }
+      if (addresses != '') {
+        slimbot_debug('interface %s: %s', name, addresses);
+        reply += name + ': ' + addresses + "\r\n";
+      }
+    }
+    if (! found) {
+      reply = "There is no available network interface.";
+    }
+    slimbot.sendMessage(messageId, reply, {});
   }
 }
 
@@ -97,13 +121,17 @@ slimbot.on('message', message => {
         };
         slimbot.sendMessage(message.chat.id, reply, optionalParams);
         break;
+      case 'hello':
+        reply = 'Hello!';
+        slimbot.sendMessage(message.chat.id, reply);
+        break;
       case '/ip':
       case 'ip':
         reportIps(message.chat.id);
         break;
       case '/lastpic':
       case 'lastpic':
-        reply = 'Here comes the last picture: ';
+        reply = 'http://urho.eu/rpi/last.jpg';
         slimbot.sendMessage(message.chat.id, reply, optionalParams);
         break;
     }
@@ -124,7 +152,7 @@ slimbot.on('callback_query', query => {
       reportIps(query.message.chat.id);
       break;
     case 'lastpic':
-      reply = 'Here comes the last picture: ';
+      reply = 'http://urho.eu/rpi/last.jpg';
       slimbot.sendMessage(query.message.chat.id, reply);
       break;
     default:
