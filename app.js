@@ -1,104 +1,32 @@
 /**
- * Teleropi web app
+ * Teleropi - Telegram bot for Raspberry Pi
  *
  * Author: ferenc.szekely@gmail.com
  * License: MIT
  *
  * Copyright (c) 2017 Ferenc Székely
  */
-var express = require('express');
-var path = require('path');
-var favicon = require('serve-favicon');
-var logger = require('morgan');
-var cookieParser = require('cookie-parser');
-var bodyParser = require('body-parser');
+'use strict';
+
 const Slimbot = require('slimbot');
-const netif = require('netinterfaces');
-// config file(s)
-const teleropi = require('./config/teleropi.config');
+const config = require('./config/teleropi.config');
+const sherlock = require('./include/sherlock.js');
 
-// debug stuff
-var debug = require('debug')(teleropi.name);
-var slimbot_debug = require('debug')(teleropi.name + '_Slimbot');
+// debug function
+let debug = require('debug')(config.name + '_Slimbot');
 
-// list all interfaces
-function reportIps(messageId = null) {
-  var reply = "Available interfaces:\r\n";
-  var len, len2;
-  var found = false;
-  var addresses = '';
-  var map = netif.list();
-  slimbot_debug('%o', map);
+// the bot
+const slimbot = new Slimbot(config.TelegramToken);
+debug('%o', slimbot);
 
-  if (messageId && map) {
-    slimbot_debug('%o', Object.keys(map));
-    for (var i = 0, len = Object.keys(map).length; i < len; i++) {
-      var name = Object.keys(map)[i];
-      var allifs = map[name];
-      var addresses = '';
-      for (var j = 0, len2 = allifs.length; j < len2; j++) {
-        if (allifs[j].internal == false && typeof allifs[j].address != "undefined") {
-          addresses += allifs[j].address + ' ';
-          found = true;
-        }
-      }
-      if (addresses != '') {
-        slimbot_debug('interface %s: %s', name, addresses);
-        reply += name + ': ' + addresses + "\r\n";
-      }
-    }
-    if (! found) {
-      reply = "There is no available network interface.";
-    }
-    slimbot.sendMessage(messageId, reply, {});
-  }
-}
-
-// start
-var index = require('./routes/index');
-const slimbot = new Slimbot(teleropi.TelegramToken);
-slimbot_debug('%o', slimbot);
-
-var app = express();
-
-// view engine setup
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'pug');
-
-// uncomment after placing your favicon in /public
-app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
-app.use(logger('dev'));
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
-
-app.use('/', index);
-
-// catch 404 and forward to error handler
-app.use(function(req, res, next) {
-  var err = new Error('Not Found');
-  err.status = 404;
-  next(err);
-});
-
-// error handler
-app.use(function(err, req, res, next) {
-  // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
-
-  // render the error page
-  res.status(err.status || 500);
-  res.render('error');
-});
-
-// Slimbot - Register listeners
+/**
+ * 'message' event handler
+ */
 slimbot.on('message', message => {
   let optionalParams = {};
   let reply = 'Please type help for valid commands';
 
-  slimbot_debug('Telegram Message: %o', message);
+  debug('Telegram Message: %o', message);
 
   if (message.text) {
     switch (message.text.toLowerCase()) {
@@ -106,7 +34,8 @@ slimbot.on('message', message => {
       case 'help':
       case 'menu':
         reply = 'Click on the commands below';
-        // define inline keyboard to send to user
+        // define inline keyboard for the user
+        // this is the primary user interafce for the bot
         optionalParams = {
           parse_mode: 'Markdown',
           reply_markup: JSON.stringify({
@@ -127,7 +56,7 @@ slimbot.on('message', message => {
         break;
       case '/ip':
       case 'ip':
-        reportIps(message.chat.id);
+        reply = sherlock.reportIPs();
         break;
       case '/lastpic':
       case 'lastpic':
@@ -138,30 +67,30 @@ slimbot.on('message', message => {
   }
 });
 
+/**
+ * 'callback_query' event handler
+ */
 slimbot.on('callback_query', query => {
   let reply = '';
 
-  slimbot_debug('Telegram Query: %o', query);
+  debug('Telegram Query: %o', query);
 
   switch (query.data) {
     case 'hello':
       reply = 'Hello!';
-      slimbot.sendMessage(query.message.chat.id, reply);
       break;
     case 'ip':
-      reportIps(query.message.chat.id);
+      reply = sherlock.reportIPs();
       break;
     case 'lastpic':
       reply = 'http://urho.eu/rpi/last.jpg';
-      slimbot.sendMessage(query.message.chat.id, reply);
       break;
     default:
       reply = 'n/a';
-      slimbot.sendMessage(query.message.chat.id, reply);
   }
+
+  slimbot.sendMessage(query.message.chat.id, reply);
 });
 
-// Slimbot - Call API
+// Start the bot
 slimbot.startPolling();
-
-module.exports = app;
